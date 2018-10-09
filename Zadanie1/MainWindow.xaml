@@ -7,16 +7,22 @@
         mc:Ignorable="d"
         Title="Zadanie 1    © copyright by Marcin Kwapisz, Dawid Gierowski " Height="720" Width="820">
     <Grid>
-        <Button Content="Zapisz do pliku txt" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="20,50,0,0" x:Name="zapisdopliku" VerticalAlignment="Top" Width="200" Background ="LightGoldenrodYellow" Click="Zapisz_do_pliku_txt" RenderTransformOrigin="0.511,-0.31"/>
-        <Button Content="Otwórz zapisany plik" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="20,360,0,0" x:Name="otworzplik" VerticalAlignment="Top" Width="200" Background ="LightGoldenrodYellow" Click="Otworz_zapisany_txt"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="160" Margin="20,100,0,0" x:Name="wprowadzone" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="300"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="160" Margin="20,410,0,0" x:Name="wyswietlZapisane" IsReadOnly="True" Text="" VerticalAlignment="Top" Width="300"/>
-        <Button Content="Zakoduj" FontSize="20" HorizontalAlignment="Left" Margin="415,50,0,0" Height="45" VerticalAlignment="Top" Width="150" Background ="LightGoldenrodYellow" Click="Przycisk_Zakoduj"/>
-        <Button Content="Dekoduj" FontSize="20" HorizontalAlignment="Left" Margin="615,50,0,0" VerticalAlignment="Top" Height="45" Width="150" Background ="LightGoldenrodYellow" Click="Przycisk_Dekoduj"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="225" Margin="415,100,0,0" x:Name="czyBledy" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="350"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="160" Margin="415,410,0,0" x:Name="odkodowany" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="335"/>
+        <Button Content="Zapisz do postaci binarnej" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,200,0,0" x:Name="konwersjaDoBin" VerticalAlignment="Top" Width="335" Background ="LightGoldenrodYellow" Click="Konwersja_Do_Bin" RenderTransformOrigin="0.511,-0.31"/>
+        <Button Content="Generuj klucz" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,420,0,0" x:Name="generujKlucz" VerticalAlignment="Top" Width="335" Background ="LightGoldenrodYellow" Click="Generuj_Klucz" />
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="141" Margin="10,40,0,0" x:Name="wprowadzoneTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="335"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="125" Margin="10,290,0,0" x:Name="wyswietlBinarnieTextBox" IsReadOnly="True" Text="" VerticalAlignment="Top" Width="335" TextWrapping="Wrap"/>
+        <Button Content="Zakoduj" FontSize="20" HorizontalAlignment="Left" Margin="415,0,0,0" Height="45" VerticalAlignment="Top" Width="365" Background ="LightGoldenrodYellow" Click="Zakoduj_Wiadomosc"/>
+        <Button Content="Dekoduj" FontSize="20" HorizontalAlignment="Left" Margin="415,255,0,0" VerticalAlignment="Top" Height="45" Width="365" Background ="LightGoldenrodYellow"  Click="Dekoduj_Wiadomosc"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="155" Margin="415,100,0,0" x:Name="szyfrogramTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top"  Width="365"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="160" Margin="10,519,0,0" x:Name="kluczTextBox" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="335"/>
         <Line X1="350" Y1="0" X2="350" Y2="720" Stroke="LightGoldenrodYellow" StrokeThickness="2" />
-        <Label Content="  Wynik: " HorizontalAlignment="Left" Margin="415,360,0,0" FontSize="20" Background ="LightGoldenrodYellow" Height="45" Width="100" VerticalAlignment="Top"/>
+        <Label Content="Wiadomość:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,0,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
+        <Label Content="Szyfrogram:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,60,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
+        <Label Content="Binarnie: "  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,250,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
+        <Label Content="Klucz:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,479,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="150" Margin="415,345,0,0" x:Name="zdekodowanyBinTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="365"/>
+        <Label Content="Zdekodowana wiadomość:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,305,0,0"  VerticalAlignment="Top" Width="260" Background ="LightGoldenrodYellow"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="150" Margin="415,519,0,0" x:Name="zdekodowanyTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="365"/>
         <Grid.Background>
             <ImageBrush ImageSource="http://www.banktapet.pl/pictures/2012/1208/1/orig_147365.jpg" Stretch="UniformToFill"/>
         </Grid.Background>
