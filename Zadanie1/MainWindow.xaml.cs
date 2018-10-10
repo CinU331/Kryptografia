@@ -1,80 +1,109 @@
 ﻿using System.Windows;
-using System.IO;
 using System;
 using System.Text;
 
-namespace Zadanie1_Marcin_Kwapisz_Dawid_Gierowski
+namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
 {
     public partial class MainWindow : Window
     {
-        byte [] message;
-        byte [] key;
-        byte [] cryptogram;
-        byte [] decoded;
+        byte [] iMessage;
+        byte [] iKey;
+        byte [] iCryptogram;
+        byte [] iDecoded;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            DecodeButton.IsEnabled = false;
+            EncodeButton.IsEnabled = false;
+            GenerateKeyButton.IsEnabled = false;
+            
         }
 
 
-        private void Konwersja_Do_Bin(object sender, RoutedEventArgs e)
+        private void ConvertToBinEventHandler(object sender, RoutedEventArgs e)
         {
-            message = System.Text.Encoding.UTF8.GetBytes(wprowadzoneTextBox.Text);
-            wyswietlBinarnieTextBox.Text = ConvertDecStringToBinString(message);
-        }
-
-        private void Generuj_Klucz(object sender, RoutedEventArgs e)
-        {
-            GenerujKlucz();
-            kluczTextBox.Text = ConvertDecStringToBinString(key);
-        }
-
-        private void Zakoduj_Wiadomosc(object sender, RoutedEventArgs e)
-        {
-            Zakoduj();
-            szyfrogramTextBox.Text = ConvertDecStringToBinString(cryptogram);
-        }
-
-        private void Dekoduj_Wiadomosc(object sender, RoutedEventArgs e)
-        {
-            Dekoduj();
-            zdekodowanyBinTextBox.Text = ConvertDecStringToBinString(decoded);
-            zdekodowanyTextBox.Text = Encoding.UTF8.GetString(decoded);
-        }
-
-        public void Zakoduj()
-        {
-            cryptogram = (byte[])message.Clone();
-
-            for (int i = 0; i < cryptogram.Length; i++)
+            if (insertedTextBox.Text.Length != 0)
             {
-                cryptogram[i] ^= key[i];
+                iMessage = System.Text.Encoding.UTF8.GetBytes(insertedTextBox.Text);
+                displayBinaryTextBox.Text = ConvertDecStringToBinString(iMessage);
+                ConvertToBinButton.IsEnabled = false;
+                insertedTextBox.IsReadOnly = true;
+                GenerateKeyButton.IsEnabled = true;
             }
         }
-        public void Dekoduj()
+        private void ResetEventHandler(object sender, RoutedEventArgs e)
         {
-            decoded = (byte[])cryptogram.Clone();
+            DecodeButton.IsEnabled = false;
+            EncodeButton.IsEnabled = false;
+            GenerateKeyButton.IsEnabled = false;
+            ConvertToBinButton.IsEnabled = true;
+            insertedTextBox.IsReadOnly = false;
+            GenerateKeyButton.IsEnabled = false;
 
-            for (int i = 0; i < cryptogram.Length; i++)
+
+            cryptogramTextBox.Clear();
+            decodedTextBox.Clear();
+            displayBinaryTextBox.Clear();
+            insertedTextBox.Clear();
+            keyTextBox.Clear();
+            decodedBinTextBox.Clear();
+        }
+
+        private void GenerateKeyEventHandler(object sender, RoutedEventArgs e)
+        {
+            GenerateKey();
+            keyTextBox.Text = ConvertDecStringToBinString(iKey);
+            EncodeButton.IsEnabled = true;
+        }
+
+        private void EncodeMessageEventHandler(object sender, RoutedEventArgs e)
+        {
+            Encode();
+            cryptogramTextBox.Text = ConvertDecStringToBinString(iCryptogram);
+            DecodeButton.IsEnabled = true;
+        }
+
+        private void DecodeMessageEventHandler(object sender, RoutedEventArgs e)
+        {
+            Decode();
+            decodedBinTextBox.Text = ConvertDecStringToBinString(iDecoded);
+            decodedTextBox.Text = Encoding.UTF8.GetString(iDecoded);
+        }
+
+        public void Encode()
+        {
+            iCryptogram = (byte[])iMessage.Clone();
+
+            for (int i = 0; i < iCryptogram.Length; i++)
             {
-                decoded[i] ^= key[i];
+                iCryptogram[i] ^= iKey[i];
+            }
+        }
+        public void Decode()
+        {
+            iDecoded = (byte[])iCryptogram.Clone();
+
+            for (int i = 0; i < iCryptogram.Length; i++)
+            {
+                iDecoded[i] ^= iKey[i];
             }
         }
 
-        public void GenerujKlucz()
+        public void GenerateKey()
         {
             Random randomGenerator = new Random();
-            key = new byte[message.Length];
-            randomGenerator.NextBytes(key);
+            iKey = new byte[iMessage.Length];
+            randomGenerator.NextBytes(iKey);
         }
 
-        public string ConvertDecStringToBinString(byte [] bytes)
+        public string ConvertDecStringToBinString(byte [] aBytes)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
+            for (int i = 0; i < aBytes.Length; i++)
             {
-                string tmp = Convert.ToString(bytes[i], 2);
+                string tmp = Convert.ToString(aBytes[i], 2);
                 if (tmp.Length < 8)
                 {
                     stringBuilder.Append(tmp.PadLeft(8, '0'));
