@@ -1,10 +1,10 @@
-﻿<Window x:Class="Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz.MainWindow"
+﻿<Window x:Class="Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Zadanie 1 - OTP   © Paweł Ciupka, Dawid Gierowski, Marcin Kwapisz " Height="767" Width="834">
+        Title="Zadanie 2 - Rabin cryptosystem   © Paweł Ciupka, Dawid Gierowski, Marcin Kwapisz " Height="767" Width="834">
     <Grid Margin="0,0,0,-1">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -24,7 +24,7 @@
         <Label Content="Key"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,479,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="150" Margin="415,345,0,0" x:Name="decodedBinTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
         <Label Content="Coded message:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,305,0,0"  VerticalAlignment="Top" Width="260" Background ="LightGoldenrodYellow"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,519,0,0" x:Name="decodedTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,519,0,0" x:Name="decodedTextBox" AcceptsReturn="True" TextWrapping="NoWrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
         <Button Content="Reset" FontSize="30" HorizontalAlignment="Left" Height="63" Margin="10,655,0,0" VerticalAlignment="Top" Width="802" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton_Copy" Click="ResetEventHandler" />
         <Grid.Background>
             <ImageBrush ImageSource="http://www.banktapet.pl/pictures/2012/1208/1/orig_147365.jpg" Stretch="UniformToFill"/>
