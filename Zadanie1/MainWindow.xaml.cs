@@ -136,7 +136,6 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
         }
         public void Decode()
         {
-
             decoded1 = new Int16[iCryptogram.Length];
             decoded2 = new Int16[iCryptogram.Length];
             decoded3 = new Int16[iCryptogram.Length];
@@ -155,7 +154,6 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                 decoded2[i] = (Int16)MathMod(-x, publicKey);
                 decoded3[i] = (Int16)MathMod(y, publicKey);
                 decoded4[i] = (Int16)MathMod(-y, publicKey);
-                Console.WriteLine("lel");
             }
         }
 
