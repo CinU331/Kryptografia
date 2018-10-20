@@ -24,7 +24,7 @@
         <Label Content="Key"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,479,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="150" Margin="415,345,0,0" x:Name="decodedBinTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
         <Label Content="Coded message:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,305,0,0"  VerticalAlignment="Top" Width="260" Background ="LightGoldenrodYellow"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,519,0,0" x:Name="decodedTextBox" AcceptsReturn="True" TextWrapping="NoWrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
+        <TextBox FontFamily="Courier New" HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,519,0,0" x:Name="decodedTextBox" AcceptsReturn="True" TextWrapping="NoWrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
         <Button Content="Reset" FontSize="30" HorizontalAlignment="Left" Height="63" Margin="10,655,0,0" VerticalAlignment="Top" Width="802" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton_Copy" Click="ResetEventHandler" />
         <Grid.Background>
             <ImageBrush ImageSource="http://www.banktapet.pl/pictures/2012/1208/1/orig_147365.jpg" Stretch="UniformToFill"/>

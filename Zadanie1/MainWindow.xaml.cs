@@ -124,23 +124,23 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                 ConvertDecStringToBinStringUnicode(decoded3) + "\n" +
                 ConvertDecStringToBinStringUnicode(decoded4) + "\n";
 
-            StringBuilder output1 = new StringBuilder();
-            StringBuilder output2 = new StringBuilder();
-            StringBuilder output3 = new StringBuilder();
-            StringBuilder output4 = new StringBuilder();
+            StringBuilder output = new StringBuilder();
+
 
             for (Int32 i = 0; i < decoded1.Length; i++)
             {
-                output1.Append(i + ". " + (char)decoded1[i] + " ");
-                output2.Append(i + ". " + (char)decoded2[i] + " ");
-                output3.Append(i + ". " + (char)decoded3[i] + " ");
-                output4.Append(i + ". " + (char)decoded4[i] + " ");
+                if (decoded1[i] == 13)
+                    decoded1[i] = 32;
+                if (decoded2[i] == 13)
+                    decoded2[i] = 32;
+                if (decoded3[i] == 13)
+                    decoded4[i] = 32;
+                if (decoded4[i] == 13)
+                    decoded4[i] = 32;
+                output.Append("|   " + (char)decoded1[i] + "  |  " + (char)decoded2[i] + "  |  " + (char)decoded3[i] + "  |  " + (char)decoded4[i] + "   |\n");
             }
 
-            decodedTextBox.Text = output1 + "\n" +
-               output2 + "\n" +
-                output3 + "\n" +
-                output4 + "\n";
+            decodedTextBox.Text = output.ToString();
             #endregion
         }
 
