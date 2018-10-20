@@ -6,19 +6,17 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
 {
     public partial class MainWindow : Window
     {
-        byte [] iMessage;
-        byte [] iKey;
-        byte [] iCryptogram;
-        byte [] iDecoded;
+        Int16 [] iMessage;
+        Int16 [] iKey;
+        Int16 [] iCryptogram;
+        Int16 [] iDecoded;
 
         public MainWindow()
         {
             InitializeComponent();
-
             DecodeButton.IsEnabled = false;
             EncodeButton.IsEnabled = false;
             GenerateKeyButton.IsEnabled = false;
-            
         }
 
 
@@ -26,7 +24,11 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
         {
             if (insertedTextBox.Text.Length != 0)
             {
-                iMessage = System.Text.Encoding.UTF8.GetBytes(insertedTextBox.Text);
+                iMessage = new Int16[insertedTextBox.Text.Length];
+                for(Int16 i = 0; i < iMessage.Length; i++)
+                {
+                    iMessage[i] = (Int16)insertedTextBox.Text[i];
+                }
                 displayBinaryTextBox.Text = ConvertDecStringToBinString(iMessage);
                 ConvertToBinButton.IsEnabled = false;
                 insertedTextBox.IsReadOnly = true;
@@ -42,7 +44,6 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
             insertedTextBox.IsReadOnly = false;
             GenerateKeyButton.IsEnabled = false;
 
-
             cryptogramTextBox.Clear();
             decodedTextBox.Clear();
             displayBinaryTextBox.Clear();
@@ -53,60 +54,57 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
 
         private void GenerateKeyEventHandler(object sender, RoutedEventArgs e)
         {
-            GenerateKey();
+            Random randomGenerator = new Random();
+            iKey = new Int16[iMessage.Length];
+            for(int i = 0; i < iKey.Length; i++)
+            {
+                iKey[i] = (Int16)randomGenerator.Next(Int16.MaxValue);
+            }
+            
             keyTextBox.Text = ConvertDecStringToBinString(iKey);
             EncodeButton.IsEnabled = true;
         }
 
         private void EncodeMessageEventHandler(object sender, RoutedEventArgs e)
         {
-            Encode();
+            iCryptogram = (Int16[])iMessage.Clone();
+
+            for (Int16 i = 0; i < iCryptogram.Length; i++)
+            {
+                iCryptogram[i] ^= iKey[i];
+            }
+
             cryptogramTextBox.Text = ConvertDecStringToBinString(iCryptogram);
             DecodeButton.IsEnabled = true;
         }
 
         private void DecodeMessageEventHandler(object sender, RoutedEventArgs e)
         {
-            Decode();
-            decodedBinTextBox.Text = ConvertDecStringToBinString(iDecoded);
-            decodedTextBox.Text = Encoding.UTF8.GetString(iDecoded);
-        }
+            iDecoded = (Int16[])iCryptogram.Clone();
 
-        public void Encode()
-        {
-            iCryptogram = (byte[])iMessage.Clone();
-
-            for (int i = 0; i < iCryptogram.Length; i++)
-            {
-                iCryptogram[i] ^= iKey[i];
-            }
-        }
-        public void Decode()
-        {
-            iDecoded = (byte[])iCryptogram.Clone();
-
-            for (int i = 0; i < iCryptogram.Length; i++)
+            for (Int16 i = 0; i < iCryptogram.Length; i++)
             {
                 iDecoded[i] ^= iKey[i];
             }
+
+            decodedBinTextBox.Text = ConvertDecStringToBinString(iDecoded);
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach(Int16 value in iDecoded)
+            {
+                stringBuilder.Append((char)value);
+            }
+            decodedTextBox.Text = stringBuilder.ToString();
         }
 
-        public void GenerateKey()
-        {
-            Random randomGenerator = new Random();
-            iKey = new byte[iMessage.Length];
-            randomGenerator.NextBytes(iKey);
-        }
-
-        public string ConvertDecStringToBinString(byte [] aBytes)
+        public string ConvertDecStringToBinString(Int16 [] aints)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < aBytes.Length; i++)
+            for (Int16 i = 0; i < aints.Length; i++)
             {
-                string tmp = Convert.ToString(aBytes[i], 2);
-                if (tmp.Length < 8)
+                string tmp = Convert.ToString(aints[i], 2);
+                if (tmp.Length < 16)
                 {
-                    stringBuilder.Append(tmp.PadLeft(8, '0'));
+                    stringBuilder.Append(tmp.PadLeft(16, '0'));
                 }
                 else
                 {
