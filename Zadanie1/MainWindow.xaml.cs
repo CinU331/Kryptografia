@@ -89,8 +89,7 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             iCryptogram = new Int16[iMessage.Length];
             for (Int32 i = 0; i < iMessage.Length; i++)
             {
-                Int32 newValue = (int)FastModulo(iMessage[i], 2, publicKey);
-                iCryptogram[i] = (Int16)newValue;
+                iCryptogram[i] = (Int16)FastModulo(iMessage[i], 2, publicKey);
             }
 
             cryptogramTextBox.Text = ConvertDecStringToBinStringUnicode(iCryptogram);
@@ -107,11 +106,11 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             ComputeFactors(privateKey1, privateKey2, ref a, ref b);
             for (Int32 i = 0; i < iCryptogram.Length; i++)
             {
-                Int32 r = (int)FastModulo(iCryptogram[i], (privateKey1 + 1) / 4, privateKey1);
-                Int32 s = (int)FastModulo(iCryptogram[i], (privateKey2 + 1) / 4, privateKey2);
+                Int32 r = (Int32)FastModulo(iCryptogram[i], (privateKey1 + 1) / 4, privateKey1);
+                Int32 s = (Int32)FastModulo(iCryptogram[i], (privateKey2 + 1) / 4, privateKey2);
 
-                Int32 x = (int)FastModulo(FastModulo(a * privateKey1 * s, 1, publicKey) + FastModulo(b * privateKey2 * r, 1, publicKey), 1, publicKey);
-                Int32 y = (int)FastModulo(FastModulo(a * privateKey1 * s, 1, publicKey) - FastModulo(b * privateKey2 * r, 1, publicKey), 1, publicKey);
+                Int32 x = (Int32)FastModulo(FastModulo(a * privateKey1 * s, 1, publicKey) + FastModulo(b * privateKey2 * r, 1, publicKey), 1, publicKey);
+                Int32 y = (Int32)FastModulo(FastModulo(a * privateKey1 * s, 1, publicKey) - FastModulo(b * privateKey2 * r, 1, publicKey), 1, publicKey);
 
                 decoded1[i] = (Int16)FastModulo(x, 1, publicKey);
                 decoded2[i] = (Int16)FastModulo(-x, 1, publicKey);
@@ -130,13 +129,25 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             for (Int32 i = 0; i < decoded1.Length; i++)
             {
                 if (decoded1[i] == 13)
+                {
                     decoded1[i] = 32;
+                }
+
                 if (decoded2[i] == 13)
+                {
                     decoded2[i] = 32;
+                }
+
                 if (decoded3[i] == 13)
+                {
                     decoded4[i] = 32;
+                }
+
                 if (decoded4[i] == 13)
+                {
                     decoded4[i] = 32;
+                }
+
                 output.Append("|   " + (char)decoded1[i] + "  |  " + (char)decoded2[i] + "  |  " + (char)decoded3[i] + "  |  " + (char)decoded4[i] + "   |\n");
             }
 
@@ -174,27 +185,6 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             publicKey = 0;
         }
 
-        #region StringMethods
-        public string ConvertDecStringToBinStringUnicode(Int16[] unicodeValues)
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (Int32 i = 0; i < unicodeValues.Length; i++)
-            {
-                string tmp = Convert.ToString(unicodeValues[i], 2);
-                if (tmp.Length < 16)
-                {
-                    stringBuilder.Append(tmp.PadLeft(16, '0'));
-                }
-                else
-                {
-                    stringBuilder.Append(tmp);
-                }
-            }
-            return stringBuilder.ToString();
-        }
-
-
-
         public string ConvertIntToBinaryString(Int32 value)
         {
             string tmp = Convert.ToString(value, 2);
@@ -205,6 +195,17 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             return tmp;
         }
 
+        #region StringMethods
+        public string ConvertDecStringToBinStringUnicode(Int16[] unicodeValues)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Int32 i = 0; i < unicodeValues.Length; i++)
+            {
+
+                stringBuilder.Append(ConvertIntToBinaryString(unicodeValues[i]));
+            }
+            return stringBuilder.ToString();
+        }
 
         // Converts character to cypher, which it represents
         public static byte ParseChar(char character)
@@ -252,7 +253,6 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
 
         public Int32 ComputeFactors(Int32 aP, Int32 aQ, ref Int32 aA, ref Int32 aB)
         {
-            // Base Case 
             if (aP == 0)
             {
                 aA = 0;
