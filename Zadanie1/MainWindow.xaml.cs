@@ -35,22 +35,6 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
                 GenerateKeyButton.IsEnabled = true;
             }
         }
-        private void ResetEventHandler(object sender, RoutedEventArgs e)
-        {
-            DecodeButton.IsEnabled = false;
-            EncodeButton.IsEnabled = false;
-            GenerateKeyButton.IsEnabled = false;
-            ConvertToBinButton.IsEnabled = true;
-            insertedTextBox.IsReadOnly = false;
-            GenerateKeyButton.IsEnabled = false;
-
-            cryptogramTextBox.Clear();
-            decodedTextBox.Clear();
-            displayBinaryTextBox.Clear();
-            insertedTextBox.Clear();
-            keyTextBox.Clear();
-            decodedBinTextBox.Clear();
-        }
 
         private void GenerateKeyEventHandler(object sender, RoutedEventArgs e)
         {
@@ -94,6 +78,23 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
                 stringBuilder.Append((char)value);
             }
             decodedTextBox.Text = stringBuilder.ToString();
+        }
+
+        private void ResetEventHandler(object sender, RoutedEventArgs e)
+        {
+            DecodeButton.IsEnabled = false;
+            EncodeButton.IsEnabled = false;
+            GenerateKeyButton.IsEnabled = false;
+            ConvertToBinButton.IsEnabled = true;
+            insertedTextBox.IsReadOnly = false;
+            GenerateKeyButton.IsEnabled = false;
+
+            cryptogramTextBox.Clear();
+            decodedTextBox.Clear();
+            displayBinaryTextBox.Clear();
+            insertedTextBox.Clear();
+            keyTextBox.Clear();
+            decodedBinTextBox.Clear();
         }
 
         public string ConvertDecStringToBinString(Int16 [] aints)
