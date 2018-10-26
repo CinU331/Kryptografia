@@ -1,18 +1,25 @@
-﻿using System.Windows;
+﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Windows;
 
 namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
 {
     public partial class MainWindow : Window
     {
-        Int16 [] iMessage;
-        Int16 [] iKey;
-        Int16 [] iCryptogram;
-        Int16 [] iDecoded;
+        private List<UInt16> iMessage;
+        private UInt16[] iKey;
+        private UInt16[] iCryptogram;
+        private UInt16[] iDecoded;
+        private byte[] iAllBytes;
+        private bool isFileUsed = false;
+
 
         public MainWindow()
         {
+            iMessage = new List<UInt16>();
             InitializeComponent();
             DecodeButton.IsEnabled = false;
             EncodeButton.IsEnabled = false;
@@ -20,17 +27,62 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
         }
 
 
+        private void ConvertFromFileEventHandler(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            byte[] allBytes = null;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                allBytes = File.ReadAllBytes(openFileDialog.FileName);
+            }
+
+            if (allBytes != null)
+            {
+                for (int i = 0; i < allBytes.Length; i += 2)
+                {
+                    List<byte> words = new List<byte>
+                    {
+                        (byte)allBytes[i]
+                    };
+
+                    if (i + 1 < allBytes.Length)
+                    {
+                        words.Add((byte)allBytes[i + 1]);
+                    }
+                    if (words.Count == 2)
+                    {
+                        iMessage.Add((UInt16)((words[0] << 8) | words[1]));
+                        Console.Write("kek");
+                    }
+                    else
+                    {
+                        iMessage.Add(words[0]);
+                    }
+
+                }
+            }
+
+            iAllBytes = allBytes;
+            isFileUsed = true;
+            displayBinaryTextBox.Text = ConvertDecStringToBinString(iMessage.ToArray());
+            ConvertToBinButton.IsEnabled = false;
+            ConvertToBinFromFileButton.IsEnabled = false;
+            insertedTextBox.IsReadOnly = true;
+            GenerateKeyButton.IsEnabled = true;
+        }
         private void ConvertToBinEventHandler(object sender, RoutedEventArgs e)
         {
             if (insertedTextBox.Text.Length != 0)
             {
-                iMessage = new Int16[insertedTextBox.Text.Length];
-                for(Int16 i = 0; i < iMessage.Length; i++)
+                for (UInt16 i = 0; i < insertedTextBox.Text.Length; i++)
                 {
-                    iMessage[i] = (Int16)insertedTextBox.Text[i];
+                    iMessage.Add((UInt16)insertedTextBox.Text[i]);
                 }
-                displayBinaryTextBox.Text = ConvertDecStringToBinString(iMessage);
+
+                displayBinaryTextBox.Text = ConvertDecStringToBinString(iMessage.ToArray());
                 ConvertToBinButton.IsEnabled = false;
+                ConvertToBinFromFileButton.IsEnabled = false;
                 insertedTextBox.IsReadOnly = true;
                 GenerateKeyButton.IsEnabled = true;
             }
@@ -39,21 +91,21 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
         private void GenerateKeyEventHandler(object sender, RoutedEventArgs e)
         {
             Random randomGenerator = new Random();
-            iKey = new Int16[iMessage.Length];
-            for(int i = 0; i < iKey.Length; i++)
+            iKey = new UInt16[iMessage.Count];
+            for (int i = 0; i < iKey.Length; i++)
             {
-                iKey[i] = (Int16)randomGenerator.Next(Int16.MaxValue);
+                iKey[i] = (UInt16)randomGenerator.Next(UInt16.MaxValue);
             }
-            
+
             keyTextBox.Text = ConvertDecStringToBinString(iKey);
             EncodeButton.IsEnabled = true;
         }
 
         private void EncodeMessageEventHandler(object sender, RoutedEventArgs e)
         {
-            iCryptogram = (Int16[])iMessage.Clone();
+            iCryptogram = (UInt16[])iMessage.ToArray().Clone();
 
-            for (Int16 i = 0; i < iCryptogram.Length; i++)
+            for (int i = 0; i < iCryptogram.Length; i++)
             {
                 iCryptogram[i] ^= iKey[i];
             }
@@ -64,20 +116,51 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
 
         private void DecodeMessageEventHandler(object sender, RoutedEventArgs e)
         {
-            iDecoded = (Int16[])iCryptogram.Clone();
+            iDecoded = (UInt16[])iCryptogram.Clone();
 
-            for (Int16 i = 0; i < iCryptogram.Length; i++)
+            for (int i = 0; i < iCryptogram.Length; i++)
             {
                 iDecoded[i] ^= iKey[i];
             }
 
             decodedBinTextBox.Text = ConvertDecStringToBinString(iDecoded);
+
+            
             StringBuilder stringBuilder = new StringBuilder();
-            foreach(Int16 value in iDecoded)
+            foreach (UInt16 value in iDecoded)
             {
                 stringBuilder.Append((char)value);
             }
-            decodedTextBox.Text = stringBuilder.ToString();
+
+            if (!isFileUsed)
+            {
+                decodedTextBox.Text = stringBuilder.ToString();
+            }
+            else
+            {
+                using (FileStream fs = new FileStream("outputFile.jpg", FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    using (BinaryWriter bw = new BinaryWriter(fs))
+                    {
+                        for (int i = 0; i < iDecoded.Length; i++)
+                        {
+                            byte[] bytes = BitConverter.GetBytes(iDecoded[i]);
+                            if (iAllBytes.Length % 2 == 1 && i == iDecoded.Length - 1)
+                            {
+                                bw.Write(bytes[0]);
+                            }
+                            else
+                            {
+                                bw.Write(bytes[1]);
+                                bw.Write(bytes[0]);
+                            }
+
+                        }
+                    }
+                }
+
+                decodedTextBox.Text = "Decoded message saved to file 'output.jpg'";
+            }
         }
 
         private void ResetEventHandler(object sender, RoutedEventArgs e)
@@ -88,6 +171,7 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
             ConvertToBinButton.IsEnabled = true;
             insertedTextBox.IsReadOnly = false;
             GenerateKeyButton.IsEnabled = false;
+            ConvertToBinFromFileButton.IsEnabled = true;
 
             cryptogramTextBox.Clear();
             decodedTextBox.Clear();
@@ -97,10 +181,10 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
             decodedBinTextBox.Clear();
         }
 
-        public string ConvertDecStringToBinString(Int16 [] aints)
+        public string ConvertDecStringToBinString(UInt16[] aints)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            for (Int16 i = 0; i < aints.Length; i++)
+            for (int i = 0; i < aints.Length; i++)
             {
                 string tmp = Convert.ToString(aints[i], 2);
                 if (tmp.Length < 16)
