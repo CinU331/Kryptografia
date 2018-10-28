@@ -10,7 +10,7 @@
             <RowDefinition/>
             <RowDefinition Height="0*"/>
         </Grid.RowDefinitions>
-        <Button Content="Cast to decimal values and duplcate bits" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,200,0,0" VerticalAlignment="Top" Width="370" Background ="LightGoldenrodYellow" x:Name="ConvertToBinButton" Click="ConvertToBinEventHandler" RenderTransformOrigin="0.511,-0.31"/>
+        <Button  Content="Load plain text&#xD;&#xA;to structures"  FontSize="18" HorizontalAlignment="Left" Height="69"  Margin="10,181,0,0" VerticalAlignment="Top" Width="180" Background ="LightGoldenrodYellow" x:Name="ConvertToBinButton" Click="ConvertToBinEventHandler" RenderTransformOrigin="0.511,-0.31"/>
         <Button Content="Generate key" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,420,0,0" VerticalAlignment="Top" Width="370" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton" Click="GenerateKeyEventHandler" />
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="141" Margin="10,40,0,0" x:Name="insertedTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="370"/>
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="125" Margin="10,290,0,0" x:Name="displayBinaryTextBox" IsReadOnly="True" Text="" VerticalAlignment="Top" Width="370" TextWrapping="Wrap"/>
@@ -27,6 +27,7 @@
         <TextBox FontFamily="Courier New" HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,519,0,0" x:Name="decodedTextBox" AcceptsReturn="True" TextWrapping="NoWrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
         <Button Content="Reset" FontSize="30" HorizontalAlignment="Left" Height="63" Margin="10,655,0,0" VerticalAlignment="Top" Width="802" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton_Copy" Click="ResetEventHandler" />
         <Label Content="Chosen decryption:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,479,0,0"  VerticalAlignment="Top" Width="220" Background ="LightGoldenrodYellow"/>
+        <Button  Content="Load file data &#xD;&#xA;to strctures"  FontSize="18" HorizontalAlignment="Left" Height="69"  Margin="190,181,0,0" VerticalAlignment="Top" Width="190" Background ="LightGoldenrodYellow" x:Name="ConvertToBinFromFileButton" Click="ConvertFromFileEventHandler" RenderTransformOrigin="0.511,-0.31"/>
         <Grid.Background>
             <ImageBrush ImageSource="http://www.banktapet.pl/pictures/2012/1208/1/orig_147365.jpg" Stretch="UniformToFill"/>
         </Grid.Background>
