@@ -10,22 +10,23 @@
             <RowDefinition/>
             <RowDefinition Height="0*"/>
         </Grid.RowDefinitions>
-        <Button Content="Convert to binary representation" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,200,0,0" VerticalAlignment="Top" Width="370" Background ="LightGoldenrodYellow" x:Name="ConvertToBinButton" Click="ConvertToBinEventHandler" RenderTransformOrigin="0.511,-0.31"/>
+        <Button Content="Cast to decimal values and duplcate bits" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,200,0,0" VerticalAlignment="Top" Width="370" Background ="LightGoldenrodYellow" x:Name="ConvertToBinButton" Click="ConvertToBinEventHandler" RenderTransformOrigin="0.511,-0.31"/>
         <Button Content="Generate key" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,420,0,0" VerticalAlignment="Top" Width="370" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton" Click="GenerateKeyEventHandler" />
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="141" Margin="10,40,0,0" x:Name="insertedTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="370"/>
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="125" Margin="10,290,0,0" x:Name="displayBinaryTextBox" IsReadOnly="True" Text="" VerticalAlignment="Top" Width="370" TextWrapping="Wrap"/>
         <Button Content="Encode" FontSize="20" HorizontalAlignment="Left" Margin="415,0,0,0" Height="45" VerticalAlignment="Top" Width="397" Background ="LightGoldenrodYellow" x:Name="EncodeButton" Click="EncodeMessageEventHandler"/>
-        <Button Content="Decode" FontSize="20" HorizontalAlignment="Left" Margin="415,255,0,0" VerticalAlignment="Top" Height="45" Width="397" Background ="LightGoldenrodYellow"  x:Name="DecodeButton" Click="DecodeMessageEventHandler"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="155" Margin="415,100,0,0" x:Name="cryptogramTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top"  Width="397"/>
+        <Button Content="Decode" FontSize="20" HorizontalAlignment="Left" Margin="415,240,0,0" VerticalAlignment="Top" Height="45" Width="397" Background ="LightGoldenrodYellow"  x:Name="DecodeButton" Click="DecodeMessageEventHandler"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="155" Margin="415,85,0,0" x:Name="cryptogramTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top"  Width="397"/>
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="131" Margin="10,519,0,0" x:Name="keyTextBox" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="370"/>
         <Label Content="Message:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,0,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
-        <Label Content="Cryptogram:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,60,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
-        <Label Content="Binary: "  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,250,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
-        <Label Content="Key"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,479,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
-        <TextBox HorizontalAlignment="Left" FontSize="20" Height="150" Margin="415,345,0,0" x:Name="decodedBinTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
-        <Label Content="Coded message:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,305,0,0"  VerticalAlignment="Top" Width="260" Background ="LightGoldenrodYellow"/>
+        <Label Content="Cryptogram:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,45,0,0"  VerticalAlignment="Top" Width="125" Background ="LightGoldenrodYellow"/>
+        <Label Content="Values before and after duplication: "  FontSize="19" HorizontalAlignment="Left" Height="40" Margin="10,250,0,0"  VerticalAlignment="Top" Width="310" Background ="LightGoldenrodYellow"/>
+        <Label Content="Private and public keys:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="10,479,0,0"  VerticalAlignment="Top" Width="220" Background ="LightGoldenrodYellow"/>
+        <TextBox HorizontalAlignment="Left" FontSize="20" Height="150" Margin="415,325,0,0" x:Name="decodedBinTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
+        <Label Content="Decoded message variants:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,285,0,0"  VerticalAlignment="Top" Width="260" Background ="LightGoldenrodYellow"/>
         <TextBox FontFamily="Courier New" HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,519,0,0" x:Name="decodedTextBox" AcceptsReturn="True" TextWrapping="NoWrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
         <Button Content="Reset" FontSize="30" HorizontalAlignment="Left" Height="63" Margin="10,655,0,0" VerticalAlignment="Top" Width="802" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton_Copy" Click="ResetEventHandler" />
+        <Label Content="Chosen decryption:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,479,0,0"  VerticalAlignment="Top" Width="220" Background ="LightGoldenrodYellow"/>
         <Grid.Background>
             <ImageBrush ImageSource="http://www.banktapet.pl/pictures/2012/1208/1/orig_147365.jpg" Stretch="UniformToFill"/>
         </Grid.Background>

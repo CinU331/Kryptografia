@@ -7,17 +7,17 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
 {
     public partial class MainWindow : Window
     {
-        private Int16[] iMessage;
-        private Int16[] iCryptogram;
+        private UInt16[] iMessage;
+        private Int32[] iCryptogram;
+        private SByte[] iMetaInfo;
 
-        private Int16[] decoded1;
-        private Int16[] decoded2;
-        private Int16[] decoded3;
-        private Int16[] decoded4;
+        private List<Int32>[] iDecodedVariants;
 
-        private Int32 privateKey1;
-        private Int32 privateKey2;
-        private Int32 publicKey;
+        private UInt16[] iResult;
+
+        private Int64 privateKey1;
+        private Int64 privateKey2;
+        private Int64 publicKey;
 
         public MainWindow()
         {
@@ -27,6 +27,11 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             EncodeButton.IsEnabled = false;
             GenerateKeyButton.IsEnabled = false;
 
+            iDecodedVariants = new List<Int32>[4];
+            iDecodedVariants[0] = new List<Int32>();
+            iDecodedVariants[1] = new List<Int32>();
+            iDecodedVariants[2] = new List<Int32>();
+            iDecodedVariants[3] = new List<Int32>();
         }
 
         private void ConvertToBinEventHandler(object sender, RoutedEventArgs e)
@@ -34,16 +39,43 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
 
             if (insertedTextBox.Text.Length != 0)
             {
-                var letters = insertedTextBox.Text.ToCharArray();
-                iMessage = new Int16[letters.Length];
+                char [] letters = insertedTextBox.Text.ToCharArray();
+                iMessage = new UInt16[letters.Length];
+                iMetaInfo = new SByte[letters.Length];
+
                 StringBuilder stringBuilder = new StringBuilder();
 
-                for (Int32 i = 0; i < letters.Length; i++)
+                for (UInt32 i = 0; i < letters.Length; i++)
                 {
-                    iMessage[i] = (Int16)letters[i];
-                    stringBuilder.Append(ConvertIntToBinaryString(iMessage[i]));
-                }
+                    stringBuilder.Append((UInt32)letters[i]);
+                    stringBuilder.Append(" -> ");
 
+                    byte[] bytes = BitConverter.GetBytes(letters[i]);
+                    string binaryString = ConvertIntToBinaryString(bytes[1], 8) + ConvertIntToBinaryString(bytes[0], 8);
+
+                    int numOfSignificantBits = 16 - binaryString.IndexOf('1');
+                    string result = "";
+
+                    if (numOfSignificantBits <= 8)
+                    {
+                        iMetaInfo[i] = -1;
+                        result = binaryString.TrimStart('0');
+                        result = (result + result).PadLeft(16, '0');
+                    }
+
+                    else
+                    {
+                        iMetaInfo[i] = (SByte)(binaryString.Length - numOfSignificantBits);
+                        result = binaryString.TrimStart('0');
+                        for (int j = 0; j < binaryString.Length - numOfSignificantBits; j++)
+                        {
+                            result = result.Insert(0, binaryString[binaryString.Length - 1 - j].ToString());
+                        }
+                    }
+                    iMessage[i] = Convert.ToUInt16(result, 2);
+                    stringBuilder.Append(iMessage[i] + "\n");
+                
+                }
                 displayBinaryTextBox.Text = stringBuilder.ToString();
 
                 ConvertToBinButton.IsEnabled = false;
@@ -59,7 +91,7 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
 
             do
             {
-                Int16 randomValue = (Int16)random.Next(byte.MaxValue);
+                Int16 randomValue = (Int16)random.Next(Int16.MaxValue);
                 bool isPrime = true;
                 for (int i = 2; i <= Math.Sqrt(randomValue); i++)
                 {
@@ -86,72 +118,97 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
 
         private void EncodeMessageEventHandler(object sender, RoutedEventArgs e)
         {
-            iCryptogram = new Int16[iMessage.Length];
-            for (Int32 i = 0; i < iMessage.Length; i++)
+            StringBuilder stringBuilder = new StringBuilder();
+            iCryptogram = new Int32[iMessage.Length];
+            for (UInt32 i = 0; i < iMessage.Length; i++)
             {
-                iCryptogram[i] = (Int16)FastModulo(iMessage[i], 2, publicKey);
+                iCryptogram[i] = (Int32)FastModulo(iMessage[i], 2, publicKey);
+                stringBuilder.Append(iCryptogram[i] + "\n");
             }
 
-            cryptogramTextBox.Text = ConvertDecStringToBinStringUnicode(iCryptogram);
+            cryptogramTextBox.Text = stringBuilder.ToString();
             DecodeButton.IsEnabled = true;
         }
 
         private void DecodeMessageEventHandler(object sender, RoutedEventArgs e)
         {
-            decoded1 = new Int16[iCryptogram.Length];
-            decoded2 = new Int16[iCryptogram.Length];
-            decoded3 = new Int16[iCryptogram.Length];
-            decoded4 = new Int16[iCryptogram.Length];
-            Int32 a = 0, b = 0;
+            iResult = new UInt16[iCryptogram.Length];
+
+            Int64 a = 0, b = 0;
             ComputeFactors(privateKey1, privateKey2, ref a, ref b);
+
+            StringBuilder stringBuilder = new StringBuilder();
+
             for (Int32 i = 0; i < iCryptogram.Length; i++)
             {
-                Int32 r = (Int32)FastModulo(iCryptogram[i], (privateKey1 + 1) / 4, privateKey1);
-                Int32 s = (Int32)FastModulo(iCryptogram[i], (privateKey2 + 1) / 4, privateKey2);
+                Int32 messageRootOfPrivateKey1 = (Int32)FastModulo(iCryptogram[i], (privateKey1 + 1) / 4, privateKey1);
+                Int32 messageRootOfPrivateKey2 = (Int32)FastModulo(iCryptogram[i], (privateKey2 + 1) / 4, privateKey2);
 
-                Int32 x = (Int32)FastModulo(FastModulo(a * privateKey1 * s, 1, publicKey) + FastModulo(b * privateKey2 * r, 1, publicKey), 1, publicKey);
-                Int32 y = (Int32)FastModulo(FastModulo(a * privateKey1 * s, 1, publicKey) - FastModulo(b * privateKey2 * r, 1, publicKey), 1, publicKey);
+                Int32 moduledFirstPart = (Int32)FastModulo(FastModulo(a, 1, publicKey) * FastModulo(privateKey1, 1, publicKey) * FastModulo(messageRootOfPrivateKey2, 1, publicKey), 1, publicKey);
+                Int32 moduledSecondPart = (Int32)FastModulo(FastModulo(b, 1, publicKey) * FastModulo(privateKey2, 1, publicKey) * FastModulo(messageRootOfPrivateKey1, 1, publicKey), 1, publicKey);
 
-                decoded1[i] = (Int16)FastModulo(x, 1, publicKey);
-                decoded2[i] = (Int16)FastModulo(-x, 1, publicKey);
-                decoded3[i] = (Int16)FastModulo(y, 1, publicKey);
-                decoded4[i] = (Int16)FastModulo(-y, 1, publicKey);
+                Int32 r = (Int32)FastModulo(moduledFirstPart + moduledSecondPart, 1, publicKey);
+                Int32 s = (Int32)FastModulo(moduledFirstPart - moduledSecondPart, 1, publicKey);
+
+                iDecodedVariants[0].Add((Int32)r);
+                iDecodedVariants[1].Add((Int32)publicKey - r);
+                iDecodedVariants[2].Add((Int32)s);
+                iDecodedVariants[3].Add((Int32) publicKey -s);
+
+                stringBuilder.Append("Decrypted portions of 16 bits - nr [" + i + "] - possible outputs: \n");
+                List<string> decodedStrings = new List<string>();
+
+                for (int j = 0; j < iDecodedVariants.Length; j++)
+                {
+                    stringBuilder.Append(iDecodedVariants[j][i] + "\n");
+                    decodedStrings.Add(Convert.ToString(iDecodedVariants[j][i], 2).PadLeft(16, '0'));
+                }
+
+                if (iMetaInfo[i] == -1)
+                {
+                    for(int j = 0; j < decodedStrings.Count; j++)
+                    {
+                        string tmp = decodedStrings[j].TrimStart('0');
+                        string leftPart = tmp.Substring(0, tmp.Length / 2);
+                        string rightPart = tmp.Substring(tmp.Length/2, tmp.Length/2);
+                        if( leftPart.Equals(rightPart))
+                        {
+                            iResult[i] = Convert.ToUInt16(leftPart, 2);
+                        }
+                    }
+                }
+                else
+                {
+                    for(int j = 0; j < decodedStrings.Count; j++)
+                    {
+                        string coppiedBits = decodedStrings[j].Substring(0, iMetaInfo[i]);
+                        string toCompare = decodedStrings[j].Substring(decodedStrings[j].Length - iMetaInfo[i], iMetaInfo[i]);
+                        if(toCompare.Equals(coppiedBits))
+                        {
+                            string actualValue = decodedStrings[j].Substring(iMetaInfo[i]);
+                            if(actualValue.Length <= 16)
+                            {
+                                iResult[i] = Convert.ToUInt16(actualValue, 2);
+                            }
+                        }
+                    }                    
+                }
             }
+
+
             #region OutputProduction
-            decodedBinTextBox.Text = ConvertDecStringToBinStringUnicode(decoded1) + "\n" +
-                ConvertDecStringToBinStringUnicode(decoded2) + "\n" +
-                ConvertDecStringToBinStringUnicode(decoded3) + "\n" +
-                ConvertDecStringToBinStringUnicode(decoded4) + "\n";
+            decodedBinTextBox.Text = stringBuilder.ToString();
 
             StringBuilder output = new StringBuilder();
-
-
-            for (Int32 i = 0; i < decoded1.Length; i++)
+            StringBuilder chosenResult = new StringBuilder();
+            
+            for (Int32 i = 0; i <  iResult.Length; i++)
             {
-                if (decoded1[i] == 13)
-                {
-                    decoded1[i] = 32;
-                }
-
-                if (decoded2[i] == 13)
-                {
-                    decoded2[i] = 32;
-                }
-
-                if (decoded3[i] == 13)
-                {
-                    decoded4[i] = 32;
-                }
-
-                if (decoded4[i] == 13)
-                {
-                    decoded4[i] = 32;
-                }
-
-                output.Append("|   " + (char)decoded1[i] + "  |  " + (char)decoded2[i] + "  |  " + (char)decoded3[i] + "  |  " + (char)decoded4[i] + "   |\n");
+                chosenResult.Append((char)iResult[i]);
             }
 
-            decodedTextBox.Text = output.ToString();
+            
+            decodedTextBox.Text = output.ToString() + '\n' +  chosenResult;
             #endregion
         }
 
@@ -175,50 +232,25 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             iMessage = null;
             iCryptogram = null;
 
-            decoded1 = null;
-            decoded2 = null;
-            decoded3 = null;
-            decoded4 = null;
+            for(int i =0; i < iDecodedVariants.Length; i++)
+            {
+                iDecodedVariants[i].Clear();
+            }
 
             privateKey1 = 0;
             privateKey2 = 0;
             publicKey = 0;
         }
 
-        public string ConvertIntToBinaryString(Int32 value)
+        public string ConvertIntToBinaryString(Int32 value, int aLenght)
         {
             string tmp = Convert.ToString(value, 2);
-            if (tmp.Length < 16)
+            if (tmp.Length < aLenght)
             {
-                tmp = (tmp.PadLeft(16, '0'));
+                tmp = (tmp.PadLeft(aLenght, '0'));
             }
             return tmp;
         }
-
-        #region StringMethods
-        public string ConvertDecStringToBinStringUnicode(Int16[] unicodeValues)
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (Int32 i = 0; i < unicodeValues.Length; i++)
-            {
-
-                stringBuilder.Append(ConvertIntToBinaryString(unicodeValues[i]));
-            }
-            return stringBuilder.ToString();
-        }
-
-        // Converts character to cypher, which it represents
-        public static byte ParseChar(char character)
-        {
-            return byte.Parse(character.ToString());
-        }
-
-        // Converts cypher to character representin it
-        public static char ParseByte(byte number)
-        {
-            return Convert.ToString(number)[0];
-        }
-        #endregion
 
         #region MathsMethods
         private Int64 FastModulo(Int64 aBase, Int64 aExp, Int64 aModulo)
@@ -251,7 +283,7 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
         }
 
 
-        public Int32 ComputeFactors(Int32 aP, Int32 aQ, ref Int32 aA, ref Int32 aB)
+        public Int64 ComputeFactors(Int64 aP, Int64 aQ, ref Int64 aA, ref Int64 aB)
         {
             if (aP == 0)
             {
@@ -260,8 +292,8 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                 return aQ;
             }
 
-            Int32 x1 = 1, y1 = 1;
-            Int32 gcd = ComputeFactors(aQ % aP, aP, ref x1, ref y1);
+            Int64 x1 = 1, y1 = 1;
+            Int64 gcd = ComputeFactors(aQ % aP, aP, ref x1, ref y1);
 
             aA = y1 - (aQ / aP) * x1;
             aB = x1;
