@@ -10,24 +10,17 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
     public partial class MainWindow : Window
     {
         private List<UInt16> iMessage;
-        private List<SByte> iMetaInfo;
-        private bool isFileUsed = false;
-        private List<char> iFileChars;
-        private byte[] iAllBytes;
-        private Int32[] iCryptogram;
-
+        private List<Int16> iMetaInfo;
+        private List<UInt16> iFileData;
         private List<Int32>[] iDecodedVariants;
 
+        private Int32[] iCryptogram;
         private UInt16[] iResult;
-
+        
+        private bool isFileUsed = false;
         private Int64 privateKey1;
         private Int64 privateKey2;
         private Int64 publicKey;
-
-        private Int32 var1;
-        private Int32 var2;
-        private Int32 var3;
-        private Int32 var4;
 
         public MainWindow()
         {
@@ -43,11 +36,13 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             iDecodedVariants[2] = new List<Int32>();
             iDecodedVariants[3] = new List<Int32>();
 
-            iFileChars = new List<char>();
+            iFileData = new List<UInt16>();
             iMessage = new List<UInt16>();
-            iMetaInfo = new List<SByte>();
+            iMetaInfo = new List<Int16>();
         }
-        private void ConvertFromFileEventHandler(object sender, RoutedEventArgs e)
+
+        #region FileLoading
+        private void FileDataEventHandler(object sender, RoutedEventArgs e)
         {
             StringBuilder stringBuilder = new StringBuilder();
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -60,66 +55,67 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
 
             if (allBytes != null)
             {
-                for (int i = 0; i < allBytes.Length; i += 2)
+                if (allBytes.Length % 2 == 0)
                 {
-                    List<byte> words = new List<byte>
+                    for (int i = 0; i < allBytes.Length; i += 2)
                     {
-                        (byte)allBytes[i]
-                    };
-
-                    if (i + 1 < allBytes.Length)
-                    {
-                        words.Add((byte)allBytes[i + 1]);
+                        iFileData.Add(BitConverter.ToUInt16(new byte[] { allBytes[i], allBytes[i + 1] }, 0));
                     }
-                    if (words.Count == 2)
+                }
+                else
+                {
+                    for (int i = 0; i < allBytes.Length; i += 2)
                     {
-                        iFileChars.Add((char)((words[0] << 8) | words[1]));
+                        if (i < allBytes.Length - 2)
+                        {
+                            iFileData.Add(BitConverter.ToUInt16(new byte[] { allBytes[i], allBytes[i + 1] }, 0));
+                        }
+                        else
+                        {
+                            iFileData.Add((UInt16)(allBytes[i]));
+                        }
                     }
-                    else
-                    {
-                        iFileChars.Add((char)words[0]);
-                    }
-
                 }
             }
 
-            iAllBytes = allBytes;
             isFileUsed = true;
-
             ConvertToBinButton.IsEnabled = false;
             ConvertToBinFromFileButton.IsEnabled = false;
             insertedTextBox.IsReadOnly = true;
             GenerateKeyButton.IsEnabled = true;
 
-            ConvertToBinEventHandler(sender, e);
+            LoadDataEventHandler(sender, e);
         }
+        #endregion
 
-        private void ConvertToBinEventHandler(object sender, RoutedEventArgs e)
+        private void LoadDataEventHandler(object sender, RoutedEventArgs e)
         {
 
             if (insertedTextBox.Text.Length != 0 || ConvertToBinButton.IsEnabled == false)
             {
-                char[] letters;
-                if (ConvertToBinButton.IsEnabled == false)
-                {
-                    letters = iFileChars.ToArray();
-                }
-                else
-                {
-                    letters = insertedTextBox.Text.ToCharArray();
-                }
 
-
+                if(isFileUsed == false)
+                {
+                    iFileData.Clear();
+                    for(int i = 0; i < insertedTextBox.Text.Length; i++)
+                    {
+                        iFileData.Add((UInt16)insertedTextBox.Text[i]);
+                    }
+                }
                 StringBuilder stringBuilder = new StringBuilder();
 
-                for (Int32 i = 0; i < letters.Length; i++)
+                for (Int32 i = 0; i < iFileData.Count; i++)
                 {
-                    stringBuilder.Append((UInt32)letters[i]);
+                    stringBuilder.Append(iFileData[i]);
                     stringBuilder.Append(" -> ");
+
                     int numOfSignificantBits;
-                    byte[] bytes = BitConverter.GetBytes(letters[i]);
+
+                    byte[] bytes = BitConverter.GetBytes(iFileData[i]);
+
                     string binaryString = ConvertIntToBinaryString(bytes[1], 8) + ConvertIntToBinaryString(bytes[0], 8);
                     string result = "";
+
                     if (binaryString.Equals("0000000000000000"))
                     {
                         numOfSignificantBits = 0;
@@ -140,27 +136,23 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                         else
                         {
                             result = binaryString.TrimStart('0');
-                            string copy = (string)result.Clone();
+                            Int16 lengthDiffrence = (Int16)(binaryString.Length - result.Length);
+                            Int16 info = (Int16)(1000 * lengthDiffrence);
                             for (int j = 0; j < binaryString.Length - numOfSignificantBits; j++)
                             {
                                 result = result.Insert(0, binaryString[binaryString.Length - 1 - j].ToString());
                             }
-                            if(result.Substring(0, result.Length - copy.Length).IndexOf('1') == -1)
-                            {
-                                iMetaInfo.Add(0);
-                            }
-                            else
-                            {
-                                iMetaInfo.Add((SByte)(binaryString.Length - numOfSignificantBits));
-                            }
+                            string nextByteString = result.Substring(lengthDiffrence, 8);
+                            info += Convert.ToByte(nextByteString, 2);
+                            iMetaInfo.Add(info);
                         }
                     }
                     iMessage.Add(Convert.ToUInt16(result, 2));
                     stringBuilder.Append(iMessage[i] + "\n");
 
                 }
+                ConvertToBinFromFileButton.IsEnabled = false;
                 displayBinaryTextBox.Text = stringBuilder.ToString();
-
                 ConvertToBinButton.IsEnabled = false;
                 insertedTextBox.IsReadOnly = true;
                 GenerateKeyButton.IsEnabled = true;
@@ -171,6 +163,10 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
         {
             Random random = new Random();
             List<Int16> primes = new List<Int16>();
+            for (int i = 0; i < iDecodedVariants.Length; i++)
+            {
+                iDecodedVariants[i].Clear();
+            }
 
             do
             {
@@ -245,10 +241,17 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                 for (int j = 0; j < iDecodedVariants.Length; j++)
                 {
                     stringBuilder.Append(iDecodedVariants[j][i] + "\n");
-                    decodedStrings.Add(Convert.ToString(iDecodedVariants[j][i], 2).PadLeft(16, '0'));
+                    string parsed = Convert.ToString(iDecodedVariants[j][i], 2).PadLeft(16, '0');
+                    if (parsed.Length <= 16)
+                    {
+                        decodedStrings.Add(parsed);
+                    }
                 }
-
-                if (iMetaInfo[i] == -1)
+                if(decodedStrings.Count == 0)
+                {
+                    iResult[i] = (UInt16)r;
+                }
+                else if (iMetaInfo[i] == -1)
                 {
                     for (int j = 0; j < decodedStrings.Count; j++)
                     {
@@ -265,51 +268,30 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                 {
                     iResult[i] = Convert.ToUInt16("0000000000000000", 2);
                 }
-                else if(iMetaInfo[i] == 0)
-                {
-                    for (int j = 0; j < decodedStrings.Count; j++)
-                    {
-                        if(decodedStrings[j].Length <= 16)
-                        {
-                            iResult[i] = Convert.ToUInt16(decodedStrings[j], 2);
-                        }
-                    }
-                }
                 else
                 {
                     for (int j = 0; j < decodedStrings.Count; j++)
                     {
-                        string coppiedBits = decodedStrings[j].Substring(0, iMetaInfo[i]);
-                        string toCompare = decodedStrings[j].Substring(decodedStrings[j].Length - iMetaInfo[i], iMetaInfo[i]);
+                        int numberOfCoppiedBits = iMetaInfo[i] / 1000;
+                        string coppiedBits = decodedStrings[j].Substring(0, numberOfCoppiedBits);
+                        string toCompare = decodedStrings[j].Substring(decodedStrings[j].Length - numberOfCoppiedBits, numberOfCoppiedBits);
                         if (toCompare.Equals(coppiedBits))
                         {
-                            string actualValue = decodedStrings[j].Substring(iMetaInfo[i]);
-                            if (actualValue.Length <= 16)
+                            string byteToCheck = decodedStrings[j].Substring(numberOfCoppiedBits, 8);
+                            if (iMetaInfo[i] % 1000 == Convert.ToByte(byteToCheck, 2))
                             {
+                                string actualValue = decodedStrings[j].Substring(numberOfCoppiedBits);
                                 iResult[i] = Convert.ToUInt16(actualValue, 2);
                             }
                         }
                     }
-                }
-
-                if(iResult[i] != (UInt32)iFileChars[i])
-                {
-                    var meta = iMetaInfo[i];
-                    var mess = iMessage[i];
-                    var chr = iFileChars[i];
-                    var res = iResult[i];
-                    var1 = r;
-                    var2 = (Int32)publicKey - r;
-                    var3 = s;
-                    var4 = (Int32)publicKey - s;
-                    Console.Write("crap");
                 }
             }
 
             #region OutputProduction
             if (!isFileUsed)
             {
-                decodedBinTextBox.Text = stringBuilder.ToString();
+                decryptionVariantsTextBox.Text = stringBuilder.ToString();
 
                 StringBuilder chosenResult = new StringBuilder();
 
@@ -319,7 +301,8 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                 }
 
 
-                decodedTextBox.Text = chosenResult.ToString();
+                chosenDecryptionTextBox.Text = chosenResult.ToString();
+                decryptionVariantsTextBox.Text = stringBuilder.ToString();
             }
             else
             {
@@ -329,31 +312,12 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                     {
                         for (int i = 0; i < iResult.Length; i++)
                         {
-                            byte[] bytes = BitConverter.GetBytes(iResult[i]);
-                            byte[] source = BitConverter.GetBytes(iFileChars[i]);
-                            if(bytes[0] !=  source[0] || bytes[1] != source[1])
-                            {
-                                var it = i;
-                                var meta = iMetaInfo[i];
-                                var mess = iMessage[i];
-                                var chr = iFileChars[i];
-                                var res = iResult[i];
-                                Console.WriteLine("kek");
-                            }
-                            if (iAllBytes.Length % 2 == 1 && i == iResult.Length - 1)
-                            {
-                                bw.Write(bytes[0]);
-                            }
-                            else
-                            {
-                                bw.Write(bytes[1]);
-                                bw.Write(bytes[0]);
-                            }
-
+                            bw.Write(iResult[i]);
                         }
                     }
                 }
-                decodedTextBox.Text = "Decoded message saved to file 'output.jpg'";
+                decryptionVariantsTextBox.Text = stringBuilder.ToString();
+                chosenDecryptionTextBox.Text = "Decoded message saved to file 'output.jpg'";
             }
 
             #endregion
@@ -367,16 +331,16 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             ConvertToBinButton.IsEnabled = true;
             insertedTextBox.IsReadOnly = false;
             GenerateKeyButton.IsEnabled = false;
-
+            ConvertToBinFromFileButton.IsEnabled = true;
 
             cryptogramTextBox.Clear();
-            decodedTextBox.Clear();
+            chosenDecryptionTextBox.Clear();
             displayBinaryTextBox.Clear();
             insertedTextBox.Clear();
             keyTextBox.Clear();
-            decodedBinTextBox.Clear();
+            decryptionVariantsTextBox.Clear();
 
-            iFileChars.Clear();
+            iFileData.Clear();
             iMessage.Clear();
             iMetaInfo.Clear();
 
@@ -387,11 +351,11 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                 iDecodedVariants[i].Clear();
             }
 
+            isFileUsed = false;
+            iResult = null;
             privateKey1 = 0;
             privateKey2 = 0;
             publicKey = 0;
-            isFileUsed = false;
-            ConvertToBinFromFileButton.IsEnabled = true;
         }
 
         public string ConvertIntToBinaryString(Int32 value, int aLenght)
