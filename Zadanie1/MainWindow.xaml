@@ -27,7 +27,7 @@
         <TextBox FontFamily="Courier New" HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,519,0,0" x:Name="chosenDecryptionTextBox" AcceptsReturn="True" TextWrapping="NoWrap" IsReadOnly="True" VerticalAlignment="Top" Width="397"/>
         <Button Content="Reset" FontSize="30" HorizontalAlignment="Left" Height="63" Margin="10,655,0,0" VerticalAlignment="Top" Width="802" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton_Copy" Click="ResetEventHandler" />
         <Label Content="Chosen decryption:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,479,0,0"  VerticalAlignment="Top" Width="220" Background ="LightGoldenrodYellow"/>
-        <Button  Content="Load file data &#xD;&#xA;to strctures"  FontSize="18" HorizontalAlignment="Left" Height="69"  Margin="190,181,0,0" VerticalAlignment="Top" Width="190" Background ="LightGoldenrodYellow" x:Name="ConvertToBinFromFileButton" Click="FileDataEventHandler" RenderTransformOrigin="0.511,-0.31"/>
+        <Button  Content="Load file data &#xA;to structures"  FontSize="18" HorizontalAlignment="Left" Height="69"  Margin="190,181,0,0" VerticalAlignment="Top" Width="190" Background ="LightGoldenrodYellow" x:Name="ConvertToBinFromFileButton" Click="FileDataEventHandler" RenderTransformOrigin="0.511,-0.31"/>
         <Grid.Background>
             <ImageBrush ImageSource="http://www.banktapet.pl/pictures/2012/1208/1/orig_147365.jpg" Stretch="UniformToFill"/>
         </Grid.Background>

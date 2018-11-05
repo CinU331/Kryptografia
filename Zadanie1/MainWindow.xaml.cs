@@ -306,7 +306,7 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
             }
             else
             {
-                using (FileStream fs = new FileStream("outputFile.jpg", FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream fs = new FileStream("outputFile", FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     using (BinaryWriter bw = new BinaryWriter(fs))
                     {
@@ -317,7 +317,7 @@ namespace Kryptografia_Rabin_Cryptosystem_Paweł_Ciupka_Dawid_Gierowski_Marcin_K
                     }
                 }
                 decryptionVariantsTextBox.Text = stringBuilder.ToString();
-                chosenDecryptionTextBox.Text = "Decoded message saved to file 'output.jpg'";
+                chosenDecryptionTextBox.Text = "Decoded message saved to file 'output'";
             }
 
             #endregion
