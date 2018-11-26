@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
         <Button Content="Convert from text" FontSize="20" HorizontalAlignment="Left" Height="59" Margin="10,186,0,0" VerticalAlignment="Top" Width="170" Background ="LightGoldenrodYellow" x:Name="ConvertToBinButton" Click="ConvertToBinEventHandler" RenderTransformOrigin="0.511,-0.31"/>
         <Button Content="Convert from file" FontSize="20" HorizontalAlignment="Left" Height="59" Margin="200,186,0,0" VerticalAlignment="Top" Width="180" Background ="LightGoldenrodYellow" x:Name="ConvertToBinFromFileButton" Click="ConvertFromFileEventHandler" RenderTransformOrigin="0.511,-0.31"/>
-        <Button Content="Generate key" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,420,0,0" VerticalAlignment="Top" Width="370" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton" Click="GenerateKeyEventHandler" Grid.RowSpan="2" />
+        <Button Content="Generate key" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="10,420,0,0" VerticalAlignment="Top" Width="170" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton" Click="GenerateKeyEventHandler" Grid.RowSpan="2" />
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="141" Margin="10,40,0,0" x:Name="insertedTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="370"/>
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="125" Margin="10,290,0,0" x:Name="displayBinaryTextBox" IsReadOnly="True" Text="" VerticalAlignment="Top" Width="370" TextWrapping="Wrap"/>
         <Button Content="Encode" FontSize="20" HorizontalAlignment="Left" Margin="415,0,0,0" Height="45" VerticalAlignment="Top" Width="397" Background ="LightGoldenrodYellow" x:Name="EncodeButton" Click="EncodeMessageEventHandler"/>
@@ -29,6 +29,7 @@
         <TextBox HorizontalAlignment="Left" FontSize="20" Height="131" Margin="415,69,0,0" x:Name="decodedTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="397" Grid.Row="1"/>
         <Button Content="Reset" FontSize="30" HorizontalAlignment="Left" Height="63" Margin="10,205,0,0" VerticalAlignment="Top" Width="802" Background ="LightGoldenrodYellow" x:Name="GenerateKeyButton_Copy" Click="ResetEventHandler" Grid.Row="1" />
         <Label Content="Decoded message:"  FontSize="20" HorizontalAlignment="Left" Height="40" Margin="415,29,0,0"  VerticalAlignment="Top" Width="180" Background ="LightGoldenrodYellow" Grid.Row="1"/>
+        <Button Content="Load key from file" FontSize="20" HorizontalAlignment="Left" Height="45" Margin="210,415,0,0" VerticalAlignment="Top" Width="170" Background ="LightGoldenrodYellow" x:Name="LoadKeyButton" Click="LoadKeyEventHandler" Grid.RowSpan="2" RenderTransformOrigin="1.531,0.56" />
         <Grid.Background>
             <ImageBrush ImageSource="http://www.banktapet.pl/pictures/2012/1208/1/orig_147365.jpg" Stretch="UniformToFill"/>
         </Grid.Background>

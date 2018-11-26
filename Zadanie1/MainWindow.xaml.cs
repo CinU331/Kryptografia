@@ -116,10 +116,48 @@ namespace Kryptografia_OTP_Paweł_Ciupka_Dawid_Gierowski_Marcin_Kwapisz
                 stringBuilder.Append("\n");
             }
 
+
+            using (FileStream fs = new FileStream("key", FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryWriter bw = new BinaryWriter(fs))
+                {
+                    for (int i = 0; i < iKey.Length; i++)
+                    {
+                        bw.Write(iKey[i]);
+                    }
+                }
+            }
+
             keyTextBox.Text = stringBuilder.ToString();
             EncodeButton.IsEnabled = true;
         }
 
+        private void LoadKeyEventHandler(object sender, RoutedEventArgs e)
+        {
+            iKey = new UInt16[iMessage.Count];
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            byte[] allBytes = null;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                allBytes = File.ReadAllBytes(openFileDialog.FileName);
+            }
+
+            for (int i = 0; i < iMessage.Count; i += 2)
+            {
+                iKey[i] = BitConverter.ToUInt16(new byte[] { allBytes[i], allBytes[i + 1] }, 0);
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < iKey.Length; i++)
+            {
+                stringBuilder.Append(Convert.ToString(iKey[i], 2).PadLeft(16, '0'));
+                stringBuilder.Append("\n");
+            }
+            keyTextBox.Text = stringBuilder.ToString();
+            EncodeButton.IsEnabled = true;
+        }
         private void EncodeMessageEventHandler(object sender, RoutedEventArgs e)
         {
             iCryptogram = (UInt16[])iMessage.ToArray();
