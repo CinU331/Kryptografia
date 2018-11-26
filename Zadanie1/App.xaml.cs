@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Zadanie1
+namespace Zadanie2
 {
     /// <summary>
     /// Logika interakcji dla klasy App.xaml
